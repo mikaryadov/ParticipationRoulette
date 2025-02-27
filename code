@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ParticipationRoulette
+{
+    class Program
+    {
+        static void Main()
+        {
+            bool showMenu = true;
+            while (showMenu)
+            {
+                showMenu = MainMenu();
+            }
+        }
+
+        private static bool MainMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("===== Participation Roulette =====");
+            Console.WriteLine("1) Escolher aluno para responder");
+            Console.WriteLine("2) Gerar composição de grupos");
+            Console.WriteLine("3) Sair");
+            Console.Write("\nSelecione uma opção: ");
+
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    SelectRandomStudent();
+                    return true;
+                case "2":
+                    GenerateGroups();
+                    return true;
+                case "3":
+                    return false;
+                default:
+                    Console.WriteLine("\nOpção inválida! Pressione Enter para tentar novamente.");
+                    Console.ReadLine();
+                    return true;
+            }
+        }
+
+        private static List<string> GetStudents()
+        {
+            return new List<string>
+            {
+                "AFONSO Almeida", "PAULO Henriques", "NUNO Pereira", "DANIEL Nogueira",
+                "Pedro MARQUES", "BRUNO Moreira", "PEDRO MONTEIRO da Rocha", "João Costa",
+                "LUÍS Moreira", "BRUNO LOPES", "MATHEUS Silva", "CRISTIANO Loução",
+                "DIOGO SABINO", "Gonçalo Freitas", "BRUNO MAGALHÃES", "GONÇALO PEREIRA",
+                "NUNO FERRAZ", "DIOGO SILVA", "SIMONE Santos", "RAFAEL Silva",
+                "PEDRO MARTINS", "PEDRO NEVES", "TIAGO Pinto", "GUSTAVO Ribeiro",
+                "JOÃO Barros", "PEDRO COSTA", "MARCOS Ribeiro", "LEANDRO Luz",
+                "FRANCISCO DIAS", "LEONARDO Andrade"
+            };
+        }
+
+        private static void SelectRandomStudent()
+        {
+            var students = GetStudents();
+            var random = new Random();
+            int index = random.Next(students.Count);
+
+            Console.WriteLine($"\nAluno escolhido: {students[index]}");
+            Console.Write("\nPressione Enter para voltar ao menu.");
+            Console.ReadLine();
+        }
+
+        private static void GenerateGroups()
+        {
+            var students = GetStudents();
+            var random = new Random();
+
+            Console.Clear();
+            Console.Write("Quantas pessoas por grupo? ");
+            if (!int.TryParse(Console.ReadLine(), out int membersPerGroup) || membersPerGroup <= 0)
+            {
+                Console.WriteLine("\nEntrada inválida! Pressione Enter para voltar.");
+                Console.ReadLine();
+                return;
+            }
+
+            var shuffledStudents = students.OrderBy(_ => random.Next()).ToList();
+            int groupCount = (int)Math.Ceiling((double)students.Count / membersPerGroup);
+
+            for (int i = 0; i < groupCount; i++)
+            {
+                var group = shuffledStudents.Skip(i * membersPerGroup).Take(membersPerGroup).ToList();
+
+                if (group.Count > 0)
+                {
+                    Console.WriteLine($"\n===== Grupo {i + 1} =====");
+                    group.ForEach(Console.WriteLine);
+                }
+            }
+
+            Console.Write("\nPressione Enter para voltar ao menu.");
+            Console.ReadLine();
+        }
+    }
+}
